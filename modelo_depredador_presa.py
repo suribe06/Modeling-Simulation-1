@@ -32,8 +32,6 @@ def plot_model(t, P, D):
     fig=plt.figure()
     ax=fig.add_subplot(111)
     ax2=fig.add_subplot(111, frame_on=False)
-    ax=fig.add_subplot(111)
-    ax2=fig.add_subplot(111, frame_on=False)
     ax2.yaxis.tick_right()
     ax.plot(t, P,'b', label='P(t): Presa (conejo)')
     ax2.plot(t, D,'r', label='D(t): Depredador (zorro)')
@@ -43,7 +41,7 @@ def plot_model(t, P, D):
     ax.legend(loc='upper left')
     ax2.legend(loc='upper right')
     plt.grid()
-    plt.xlabel('Time (meses)')
+    plt.xlabel('Tiempo (meses)')
     plt.title('Modelo Depredador-Presa')
     plt.show()
 
