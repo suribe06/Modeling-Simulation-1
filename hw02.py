@@ -1,16 +1,16 @@
-from sympy import var, solve, sin, cos
 import matplotlib.pyplot as plt
+from scipy import optimize
 import numpy as np
 import statistics
 import math
 
 def f(t,u):
-    return -10*u
-    #return -10*u*(u-math.cos(t))-math.sin(t)
+    #return -10*u
+    return -10*u*(u-math.cos(t))-math.sin(t)
 
 def sol_analitica(t):
-    return math.exp(-10*t)
-    #return math.cos(t)
+    #return math.exp(-10*t)
+    return math.cos(t)
 
 def euler_explicit_method(t_vector, f, y0, h):
     n = len(t_vector)
@@ -25,11 +25,10 @@ def euler_implicit_method(t_vector, y0, h):
     e_vector = np.zeros(n)
     e_vector[0] = y0
     for i in range(0, n-1):
-        x = var('x')
-        f1 = x - e_vector[i] - h*-10*x
-        #f1 = x - e_vector[i] - h*-10*x*(x-cos(t_vector[i+1])) - sin(t_vector[i+1])
-        root = solve((f1), (x))
-        e_vector[i + 1] = root[0]
+        #f_ = lambda x: x - e_vector[i] - h*(-10*x)
+        f_ = lambda x: x - e_vector[i] - (h/2)*(f(t_vector[i], e_vector[i]) + (-10*x*(x-math.cos(t_vector[i+1])) - math.sin(t_vector[i+1])))
+        root = optimize.newton(f_, e_vector[i])
+        e_vector[i + 1] = root
     return e_vector
 
 def trapezoid_method(t_vector, y0, h):
@@ -37,11 +36,10 @@ def trapezoid_method(t_vector, y0, h):
     e_vector = np.zeros(n)
     e_vector[0] = y0
     for i in range(0, n-1):
-        x = var('x')
-        f1 = x - e_vector[i] - (h/2)*(f(t_vector[i], e_vector[i]) + (-10*x))
-        #f1 = x - e_vector[i] - (h/2)*(f(t_vector[i], e_vector[i]) + (-10*x*(x-cos(t_vector[i+1])) - sin(t_vector[i+1])))
-        root = solve((f1), (x))
-        e_vector[i + 1] = root[0]
+        #f_ = lambda x: x - e_vector[i] - (h/2)*(f(t_vector[i], e_vector[i]) + (-10*x))
+        f_ = lambda x: x - e_vector[i] - (h/2)*(f(t_vector[i], e_vector[i]) + (-10*x*(x-math.cos(t_vector[i+1])) - math.sin(t_vector[i+1])))
+        root = optimize.newton(f_, e_vector[i])
+        e_vector[i + 1] = root
     return e_vector
 
 def main():
