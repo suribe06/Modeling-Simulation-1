@@ -16,7 +16,7 @@ def euler_explicit_method(t_vector, f, y0, h):
     n = len(t_vector)
     e_vector = np.zeros(n)
     e_vector[0] = y0
-    for i in range(0, n-1):
+    for i in range(n-1):
         e_vector[i + 1] = e_vector[i] + h*f(t_vector[i], e_vector[i])
     return e_vector
 
@@ -24,7 +24,7 @@ def euler_implicit_method(t_vector, y0, h):
     n = len(t_vector)
     e_vector = np.zeros(n)
     e_vector[0] = y0
-    for i in range(0, n-1):
+    for i in range(n-1):
         #f_ = lambda x: x - e_vector[i] - h*(-10*x)
         f_ = lambda x: x - e_vector[i] - (h/2)*(f(t_vector[i], e_vector[i]) + (-10*x*(x-math.cos(t_vector[i+1])) - math.sin(t_vector[i+1])))
         root = optimize.newton(f_, e_vector[i])
@@ -35,7 +35,7 @@ def trapezoid_method(t_vector, y0, h):
     n = len(t_vector)
     e_vector = np.zeros(n)
     e_vector[0] = y0
-    for i in range(0, n-1):
+    for i in range(n-1):
         #f_ = lambda x: x - e_vector[i] - (h/2)*(f(t_vector[i], e_vector[i]) + (-10*x))
         f_ = lambda x: x - e_vector[i] - (h/2)*(f(t_vector[i], e_vector[i]) + (-10*x*(x-math.cos(t_vector[i+1])) - math.sin(t_vector[i+1])))
         root = optimize.newton(f_, e_vector[i])
