@@ -1,7 +1,8 @@
+#Numerical solutions for EDOs
+
 import matplotlib.pyplot as plt
 from scipy import optimize
 import numpy as np
-import statistics
 import math
 
 def f(t,u):
@@ -12,7 +13,7 @@ def sol_analitica(t):
     return math.exp(-10*t)
     #return math.cos(t)
 
-def euler_explicit_method(t_vector, f, y0, h):
+def euler_explicit_method(t_vector, y0, h):
     n = len(t_vector)
     e_vector = np.zeros(n)
     e_vector[0] = y0
@@ -58,19 +59,6 @@ def main():
     e_vector2 = euler_implicit_method(t_vector, y0, h)
     trap_vector = trapezoid_method(t_vector, y0, h)
 
-    #MRE
-    e1, e2, e3 = [], [], []
-    for i in range(n):
-        e1.append(abs((e_vector1[i] - sol_vector[i])/sol_vector[i]))
-        e2.append(abs((e_vector2[i] - sol_vector[i])/sol_vector[i]))
-        e3.append(abs((trap_vector[i] - sol_vector[i])/sol_vector[i]))
-    mre1 = statistics.mean(e1)
-    mre2 = statistics.mean(e2)
-    mre3 = statistics.mean(e3)
-    print("Mean Relative Error Euler Explicit: ",mre1)
-    print("Mean Relative Error Euler Implicit: ",mre2)
-    print("Mean Relative Error Trapezoid: ",mre3)
-
     #Plot the methods
     plt.plot(t_vector, e_vector1, "cx", label = "Euler Explicit")
     plt.plot(t_vector, e_vector2, "r.", label = "Euler Implicit")
@@ -84,4 +72,4 @@ def main():
     plt.show()
     return
 
-main()
+#main()
