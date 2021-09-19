@@ -1,4 +1,4 @@
-#Numerical solutions for EDOs
+#Numerical solutions for ODEs
 
 import matplotlib.pyplot as plt
 from scipy import optimize

@@ -1,16 +1,16 @@
-#Numerical estimation of error in EDOs
+#Numerical estimation of error in ODEs
 
 from hw02 import euler_explicit_method, euler_implicit_method, trapezoid_method, sol_analitica, f
 import numpy as np
 import math
 
-def norm_p(e_, p, h):
+def norm_p(e, p, h):
     sum = 0
-    for x in e_: sum += abs(x)**p
+    for x in e: sum += abs(x)**p
     return h * (sum **(1/p))
 
-def norm_inf(e_):
-    return max(e_)
+def norm_inf(e):
+    return max(e)
 
 def main():
     N = 100
