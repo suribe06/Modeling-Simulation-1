@@ -1,6 +1,7 @@
 #Numerical refinement study
 
 from hw02 import euler_explicit_method, euler_implicit_method, trapezoid_method, f
+import matplotlib.pyplot as plt
 import numpy as np
 import math
 
@@ -22,6 +23,7 @@ def main():
 
     K = 12
     E_sequence = []
+    hs = []
     for i in range(1, K+1):
         h_i = h / (2**i)
         ode_approx_i = euler_explicit_method(t_vector, y0, h_i)
@@ -31,8 +33,16 @@ def main():
         p = 2
         E_i = norm_p(e_i, p, h_i)
         E_sequence.append(E_i)
+        hs.append(h_i)
 
     print(E_sequence)
+    plt.plot(hs, E_sequence, "cx", label="E Sequence")
+    plt.title("Numerical Refinement Study")
+    plt.ylabel("E(h)")
+    plt.xlabel("h")
+    plt.legend()
+    plt.grid()
+    plt.show()
     return
 
 main()
