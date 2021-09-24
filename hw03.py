@@ -5,12 +5,14 @@ import numpy as np
 import math
 
 def norm_p(e, p, h):
-    sum = 0
-    for x in e: sum += abs(x)**p
-    return h * (sum **(1/p))
-
-def norm_inf(e):
-    return max(e)
+    ans = None
+    if p == np.inf:
+        ans = max(e)
+    else:
+        sum = 0
+        for x in e: sum += abs(x)**p
+        ans = h * (sum **(1/p))
+    return ans
 
 def main():
     N = 100
@@ -18,8 +20,7 @@ def main():
     tf = 2*math.pi
     y0 = 1
     t_vector, h = np.linspace(t0, tf, num=N, retstep=True)
-    N1 = (2*N)-1
-    t_vector2, h2 = np.linspace(t0, tf, num=N1, retstep=True)
+    h2 = h/2
     sol_vector = np.zeros(N)
     for i in range(N):
         sol_vector[i] = sol_analitica(t_vector[i])
