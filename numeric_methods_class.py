@@ -6,9 +6,14 @@ import numpy as np
 import math
 
 def norm_p(e, p, h):
-    sum = 0
-    for x in e: sum += abs(x)**p
-    return h * (sum **(1/p))
+    ans = None
+    if p == np.inf:
+        ans = max(e)
+    else:
+        sum = 0
+        for x in e: sum += abs(x)**p
+        ans = h * (sum **(1/p))
+    return ans
 
 def plot_graphics(x, y, l, xl, yl, name):
     plt.plot(x, y, "cx", label=l)
