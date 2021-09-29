@@ -42,7 +42,7 @@ def runge_kutta(A, B, C, f, u0, t_vector, h):
     return u_vector
 
 def main():
-    #First Matrix
+    #First Butcher table
     B = [1/6, 1/3, 1/3, 1/6]
     C = [0, 1/2, 1/2, 1]
     r = len(B)
@@ -59,6 +59,7 @@ def main():
     t_vector, h = np.linspace(t0, tf, num=N, retstep=True)
 
     lambdas = [-10, 1, 10]
+    cont = 1
     for l in lambdas:
         f = lambda u, t: l * u
         sol_analitica = lambda t: math.exp(l*t)
@@ -85,7 +86,29 @@ def main():
         print("Para lambda={0}".format(l))
         print("Metodo Runge-Kutta: c={0}, p={1}".format(c, p_rk))
 
-        #Numeric refinement study
+        #Numerical refinement study
+        K = 12
+        E_sequence = []
+        hs = []
+        for i in range(1, K+1):
+            h_i = h / (2**i)
+            ode_approx_i = runge_kutta(A, B, C, f, u0, t_vector, h_i)
+            e_i = []
+            for j in range(N):
+                e_i.append(abs(ode_approx_i[j] - sol_vector[j]))
+            p = 2
+            E_i = norm_p(e_i, p, h_i)
+            E_sequence.append(E_i)
+            hs.append(h_i)
+
+        plt.clf()
+        plt.plot(hs, E_sequence, "c-o", label="E Sequence for lambda={0}".format(l))
+        plt.legend()
+        plt.ylabel("E(h)")
+        plt.xlabel("h")
+        plt.grid()
+        plt.savefig("NRS{0}".format(cont))
+        cont += 1
     return
 
 main()
