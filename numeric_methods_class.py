@@ -190,21 +190,24 @@ class NumericMethods:
         reference_grid = None
         approx1 = None
         approx2 = None
-
+        ans = False
         if self.sol_analitica != None: reference_grid = self.get_sol_analitica_vector()
 
         if method_selector == 0: #Explicit Euler
             if self.sol_analitica == None: reference_grid = self.euler_explicit(False)
             approx1 = self.euler_explicit(False, self.h/2)
             approx2 = self.euler_explicit(False, self.h/4)
+            ans = True
         elif method_selector == 1: #Implicit Euler
             if self.sol_analitica == None: reference_grid = self.euler_implicit(False)
             approx1 = self.euler_implicit(False, self.h/2)
             approx2 = self.euler_implicit(False, self.h/4)
+            ans = True
         elif method_selector == 2: #Trapezoid Method
             if self.sol_analitica == None: reference_grid = self.trapezoid(False)
             approx1 = self.trapezoid(False, self.h/2)
             approx2 = self.trapezoid(False, self.h/4)
+            ans = True
         elif method_selector == 3: #Implicit RK
             pass
         elif method_selector == 4: #Explicit RK
@@ -212,13 +215,14 @@ class NumericMethods:
         else:
             print("El metodo ingresado no es valido")
 
-        err_ap1, err_ap2 = [], []
-        for i in range(self.N):
-            err_ap1.append(abs(approx1[i] - reference_grid[i]))
-            err_ap2.append(abs(approx2[i] - reference_grid[i]))
-        E_ap1 = norm_p(err_ap1, norm, self.h/2)
-        E_ap2 = norm_p(err_ap2, norm, self.h/4)
-        R = E_ap1 / E_ap2
-        p = math.log(R, 2)
-        c = E_ap1 / (self.h**p)
+        if ans:
+            err_ap1, err_ap2 = [], []
+            for i in range(self.N):
+                err_ap1.append(abs(approx1[i] - reference_grid[i]))
+                err_ap2.append(abs(approx2[i] - reference_grid[i]))
+            E_ap1 = norm_p(err_ap1, norm, self.h/2)
+            E_ap2 = norm_p(err_ap2, norm, self.h/4)
+            R = E_ap1 / E_ap2
+            p = math.log(R, 2)
+            c = E_ap1 / (self.h**p)
         return c, p
