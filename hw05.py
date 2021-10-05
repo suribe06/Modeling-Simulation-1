@@ -43,8 +43,8 @@ def runge_kutta(A, B, C, f, u0, t_vector, h):
     n = len(t_vector)
     u_vector = np.zeros(n) #solution vector
     u_vector[0] = u0
-    ys = [] #vector of ys
     for i in range(n-1):
+        ys = [] #vector of ys
         for j in range(r):
             sum = 0
             for k in range(j):

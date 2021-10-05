@@ -112,8 +112,8 @@ class NumericMethods:
         n = len(self.t_vector)
         u_vector = np.zeros(n)
         u_vector[0] = self.y0
-        ys = [] #vector of ys
         for i in range(n-1):
+            ys = [] #vector of ys
             for j in range(r):
                 sum = 0
                 for k in range(j):
