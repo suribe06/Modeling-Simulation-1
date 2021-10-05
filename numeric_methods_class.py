@@ -18,8 +18,8 @@ def norm_p(e, p, h):
 def plot_graphics(x, y, l, xl, yl, name):
     plt.clf()
     plt.plot(x, y, "cx", label=l)
-    plt.ylabel(xl)
-    plt.xlabel(yl)
+    plt.ylabel(yl)
+    plt.xlabel(xl)
     plt.legend()
     plt.grid()
     plt.savefig("{0}.png".format(name), format="PNG")
@@ -93,8 +93,8 @@ class NumericMethods:
             def equations(vars):
                 #nonlinear equation system
                 y1, y2 = vars
-                eq1 = y1 - u_vector[i] - h * ((A[0][0]*f(y1, self.t_vector[i] + (C[0] * h))) + (A[0][1]*self.f(y2, self.t_vector[i] + (C[1] * h))))
-                eq2 = y2 - u_vector[i] - h * ((A[1][0]*f(y1, self.t_vector[i] + (C[0] * h))) + (A[1][1]*self.f(y2, self.t_vector[i] + (C[1] * h))))
+                eq1 = y1 - u_vector[i] - h * ((A[0][0]*self.f(y1, self.t_vector[i] + (C[0] * h))) + (A[0][1]*self.f(y2, self.t_vector[i] + (C[1] * h))))
+                eq2 = y2 - u_vector[i] - h * ((A[1][0]*self.f(y1, self.t_vector[i] + (C[0] * h))) + (A[1][1]*self.f(y2, self.t_vector[i] + (C[1] * h))))
                 return [eq1, eq2]
             y1, y2 =  optimize.fsolve(equations, (u_vector[i], u_vector[i]))
             ys = [y1, y2]
@@ -116,15 +116,11 @@ class NumericMethods:
         for i in range(n-1):
             for j in range(r):
                 sum = 0
-                for k in range(j+1):
+                for k in range(j):
                     if A[j][k] == 0: sum += 0
-                    else: #A[j][k] != 0
-                        if k < j: #Rung-Kutta Explicito
-                            sum += A[j][k] * self.f(ys[j-1], self.t_vector[i] + (h*C[k]))
-                        else: # k >= j Runge-Kutta Implicito
-                            print("La matriz A ingresada corresponde a RK implicito")
-                y_i = u_vector[i] + (h * sum)
-                ys.append(y_i)
+                    else: sum += A[j][k] * self.f(ys[j-1], self.t_vector[i] + (h*C[k]))
+                y_j = u_vector[i] + (h * sum)
+                ys.append(y_j)
             sum = 0
             for j in range(r):
                 sum += B[j] * self.f(ys[j], self.t_vector[i] + (C[j] * h))
@@ -184,7 +180,7 @@ class NumericMethods:
             print("El metodo ingresado no es valido")
         if ans: plot_graphics(hs, E_sequence, "E Sequence", "E(h)", "h", "NumericalRefinementStudy")
 
-    def convergence_analysis(self, method_selector, norm):
+    def convergence_analysis(self, method_selector, norm, A=None, B=None, C=None):
         p = None
         c = None
         reference_grid = None
@@ -209,9 +205,15 @@ class NumericMethods:
             approx2 = self.trapezoid(False, self.h/4)
             ans = True
         elif method_selector == 3: #Implicit RK
-            pass
+            if self.sol_analitica == None: reference_grid = self.runge_kutta_implicit_2s(A, B, C, False)
+            approx1 = self.runge_kutta_implicit_2s(A, B, C, False, self.h/2)
+            approx2 = self.runge_kutta_implicit_2s(A, B, C, False, self.h/4)
+            ans = True
         elif method_selector == 4: #Explicit RK
-            pass
+            if self.sol_analitica == None: reference_grid = self.runge_kutta_explicit_rs(A, B, C, False)
+            approx1 = self.runge_kutta_explicit_rs(A, B, C, False, self.h/2)
+            approx2 = self.runge_kutta_explicit_rs(A, B, C, False, self.h/4)
+            ans = True
         else:
             print("El metodo ingresado no es valido")
 

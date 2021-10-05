@@ -1,19 +1,13 @@
-#Runge-Kutta Method for r steps
-
 import matplotlib.pyplot as plt
 from scipy import optimize
 import numpy as np
 import math
 
-def norm_p(e, p, h):
-    ans = None
-    if p == np.inf:
-        ans = max(e)
-    else:
-        sum = 0
-        for x in e: sum += abs(x)**p
-        ans = h * (sum **(1/p))
-    return ans
+def f(u,t):
+    return 3*u
+
+def sol_analitica(t):
+    return math.exp(3*t)
 
 def implicit_runge_kutta_2(A, B, C, f, u0, t_vector, h):
     #Impicit RK method of 2 steps
@@ -74,60 +68,20 @@ def main():
     t0 = 0
     tf = 1
     u0 = 1 #initial value
-    N = 1000
+    N = 2
     t_vector, h = np.linspace(t0, tf, num=N, retstep=True)
+    sol_vector = np.zeros(N)
+    for i in range(N):
+        sol_vector[i] = sol_analitica(t_vector[i])
 
-    lambdas = [-10, 1, 10]
-    cont = 4
-    for l in lambdas:
-        f = lambda u, t: l * u
-        sol_analitica = lambda t: math.exp(l*t)
-        sol_vector = np.zeros(N)
-        for i in range(N):
-            sol_vector[i] = sol_analitica(t_vector[i])
-
-        #Convergence analysis
-        ans1 = runge_kutta(A, B, C, f, u0, t_vector, h)
-        ans2 = runge_kutta(A, B, C, f, u0, t_vector, h/2)
-
-        err_ans1, err_ans2 = [], []
-        for i in range(N):
-            err_ans1.append(abs(ans1[i] - sol_vector[i]))
-            err_ans2.append(abs(ans2[i] - sol_vector[i]))
-
-        p = 2
-        E_ans1 = norm_p(err_ans1, p, h)
-        E_ans2 = norm_p(err_ans2, p, h/2)
-
-        R = E_ans1 / E_ans2
-        p_rk = math.log(R, 2)
-        c = E_ans1 / (h**p_rk)
-        print("Para lambda={0}".format(l))
-        print("Metodo Runge-Kutta: c={0}, p={1}".format(c, p_rk))
-
-        #Numerical refinement study
-        K = 12
-        E_sequence = []
-        hs = []
-        for i in range(1, K+1):
-            h_i = h / (2**i)
-            ode_approx_i = runge_kutta(A, B, C, f, u0, t_vector, h_i)
-            e_i = []
-            for j in range(N):
-                e_i.append(abs(ode_approx_i[j] - sol_vector[j]))
-            p = 2
-            E_i = norm_p(e_i, p, h_i)
-            E_sequence.append(E_i)
-            hs.append(h_i)
-
-        plt.clf()
-        plt.plot(hs, E_sequence, "c-o", label="E Sequence for lambda={0}".format(l))
-        plt.legend()
-        plt.ylabel("E(h)")
-        plt.xlabel("h")
-        plt.grid()
-        plt.savefig("NRS{0}".format(cont))
-        cont += 1
-    return
+    ans1 = runge_kutta(A, B, C, f, u0, t_vector, h)
+    ans2 = implicit_runge_kutta_2(A2, B2, C2, f, u0, t_vector, h)
+    print(ans1)
+    plt.plot(t_vector, sol_vector, label="Sol Analitica")
+    plt.plot(t_vector, ans1, label="RK Explicit")
+    #plt.plot(t_vector, ans2, label="RK Implicit")
+    plt.grid()
+    plt.legend()
+    plt.show()
 
 main()
