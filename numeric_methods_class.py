@@ -52,7 +52,7 @@ class NumericMethods:
         e_vector = np.zeros(n)
         e_vector[0] = self.y0
         for i in range(n-1):
-            e_vector[i + 1] = e_vector[i] + h*self.f(self.t_vector[i], e_vector[i])
+            e_vector[i + 1] = e_vector[i] + h*self.f(e_vector[i], self.t_vector[i])
         if graphic: plot_graphics(self.t_vector, e_vector, "Euler Explicit", "t", "f(t)", "EulerExplicit")
         return e_vector
 
@@ -63,7 +63,7 @@ class NumericMethods:
         e_vector = np.zeros(n)
         e_vector[0] = self.y0
         for i in range(n-1):
-            f_ = lambda x: x - e_vector[i] - (h * self.f(self.t_vector[i+1], x))
+            f_ = lambda x: x - e_vector[i] - (h * self.f(x, self.t_vector[i+1]))
             root = optimize.fsolve((f_),(e_vector[i]))
             e_vector[i + 1] = root
         if graphic: plot_graphics(self.t_vector, e_vector, "Euler Implicit", "t", "f(t)", "EulerImplicit")
@@ -76,7 +76,7 @@ class NumericMethods:
         trap_vector = np.zeros(n)
         trap_vector[0] = self.y0
         for i in range(n-1):
-            f_ = lambda x: x - trap_vector[i] - ((h/2)*(self.f(self.t_vector[i], trap_vector[i]) + self.f(self.t_vector[i+1], x)))
+            f_ = lambda x: x - trap_vector[i] - ((h/2)*(self.f(trap_vector[i], self.t_vector[i]) + self.f(x, self.t_vector[i+1])))
             root = optimize.fsolve((f_),(trap_vector[i]))
             trap_vector[i + 1] = root
         if graphic: plot_graphics(self.t_vector, trap_vector, "Trapezoid", "t", "f(t)", "Trapezoid")
@@ -128,11 +128,10 @@ class NumericMethods:
         if graphic: plot_graphics(self.t_vector, u_vector, "Explicit Runge-Kuta", "t", "f(t)", "ExplicitRK")
         return u_vector
 
-    def numerical_refinement_study(self, method_selector, K, norm):
+    def numerical_refinement_study(self, method_selector, K, norm, ans, A=None, B=None, C=None):
         ode_approx = None
         hs = []
         E_sequence = []
-        ans = False
         if method_selector == 0: #Explicit Euler
             if self.sol_analitica != None: ode_approx = self.get_sol_analitica_vector()
             else: ode_approx = self.euler_explicit(False)
@@ -145,7 +144,6 @@ class NumericMethods:
                 E_i = norm_p(e_i, norm, h_i)
                 E_sequence.append(E_i)
                 hs.append(h_i)
-            ans = True
         elif method_selector == 1: #Implicit Euler
             if self.sol_analitica != None: ode_approx = self.get_sol_analitica_vector()
             else: ode_approx = self.euler_implicit(False)
@@ -158,7 +156,6 @@ class NumericMethods:
                 E_i = norm_p(e_i, norm, h_i)
                 E_sequence.append(E_i)
                 hs.append(h_i)
-            ans = True
         elif method_selector == 2: #Trapezoid Method
             if self.sol_analitica != None: ode_approx = self.get_sol_analitica_vector()
             else: ode_approx = self.trapezoid(False)
@@ -171,14 +168,34 @@ class NumericMethods:
                 E_i = norm_p(e_i, norm, h_i)
                 E_sequence.append(E_i)
                 hs.append(h_i)
-            ans = True
         elif method_selector == 3: #Implicit RK
-            pass
+            if self.sol_analitica != None: ode_approx = self.get_sol_analitica_vector()
+            else: ode_approx = self.runge_kutta_implicit_2s(A, B, C, False)
+            for i in range(1, K+1):
+                h_i = self.h / (2**i)
+                ode_approx_i = self.runge_kutta_implicit_2s(A, B, C, False, h_i)
+                e_i = []
+                for j in range(self.N):
+                    e_i.append(abs(ode_approx_i[j] - ode_approx[j]))
+                E_i = norm_p(e_i, norm, h_i)
+                E_sequence.append(E_i)
+                hs.append(h_i)
         elif method_selector == 4: #Explicit RK
-            pass
+            if self.sol_analitica != None: ode_approx = self.get_sol_analitica_vector()
+            else: ode_approx = self.runge_kutta_explicit_rs(A, B, C, False)
+            for i in range(1, K+1):
+                h_i = self.h / (2**i)
+                ode_approx_i = self.runge_kutta_explicit_rs(A, B, C, False, h_i)
+                e_i = []
+                for j in range(self.N):
+                    e_i.append(abs(ode_approx_i[j] - ode_approx[j]))
+                E_i = norm_p(e_i, norm, h_i)
+                E_sequence.append(E_i)
+                hs.append(h_i)
         else:
             print("El metodo ingresado no es valido")
-        if ans: plot_graphics(hs, E_sequence, "E Sequence", "E(h)", "h", "NumericalRefinementStudy")
+        if ans: plot_graphics(hs, E_sequence, "E Sequence", "h", "E(h)", "NumericalRefinementStudy")
+        return hs, E_sequence
 
     def convergence_analysis(self, method_selector, norm, A=None, B=None, C=None):
         p = None
