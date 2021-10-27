@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
-from numeric_methods import euler_explicit_method
+from numeric_methods import euler_explicit_method, euler_implicit_method, trapezoid_method
+from numeric_methods import runge_kutta_implicit_2s, runge_kutta_explicit_rs
 
 alfa = 0.35
 epsilon = 0.05
@@ -13,9 +14,9 @@ omega_1 = 0.1
 
 def plot_graphics(t_vector, G, S, T, name):
     plt.clf()
-    plt.plot(t_vector, G, 'b', label='G(t)')
+    plt.plot(t_vector, G, 'g', label='G(t)')
     plt.plot(t_vector, S, 'r', label='S(t)')
-    plt.plot(t_vector, T, 'g', label='T(t)')
+    plt.plot(t_vector, T, 'b', label='T(t)')
     plt.legend()
     plt.grid()
     plt.xlabel('Time range')
@@ -52,9 +53,17 @@ u = odeint(ode_system, u0, t_vector)
 G, S, T = u.T
 plot_graphics(t_vector, G, S, T, "odeint()_solution")
 
-#euler euler explicit method
+#euler explicit method
 G, S, T = euler_explicit_method(ode_system, t_vector, u0, h)
 plot_graphics(t_vector, G, S, T, "euler_explicit_solution")
+
+#euler implicit method
+G, S, T = euler_implicit_method(ode_system, t_vector, u0, h)
+plot_graphics(t_vector, G, S, T, "euler_implicit_solution")
+
+#trapezoid method
+G, S, T = trapezoid_method(ode_system, t_vector, u0, h)
+plot_graphics(t_vector, G, S, T, "trapezoid_solution")
 
 #Second Simulation
 #G0 = 0.8

@@ -16,8 +16,6 @@ N = 1000
 nm = NumericMethods(f, y0, t0, tf, N, sol_analitica)
 
 #Prueba Metodos
-p1 = nm.euler_explicit(True)
-p2 = nm.euler_implicit(True)
 p3 = nm.trapezoid(True)
 
 method_selector = 1 #0:euler_explicit, 1:euler_implicit, 2:trapezoid, 3:RK Implicit, 4:RK Explicit
