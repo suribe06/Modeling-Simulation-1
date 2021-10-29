@@ -43,9 +43,9 @@ def ode_system(u, t):
     return ans
 
 #First Simulation
-G0 = 0.3
-S0 = 0.2
-T0 = 0.5
+G0 = 0.8
+S0 = 0.1
+T0 = 0.1
 u0 = [G0, S0, T0]
 t0 = 0
 tf = 100
