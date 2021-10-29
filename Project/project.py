@@ -4,19 +4,22 @@ from scipy.integrate import odeint
 from numeric_methods import euler_explicit_method, euler_implicit_method, trapezoid_method
 from numeric_methods import runge_kutta_implicit_2s, runge_kutta_explicit_rs
 
+#Parameters for omega function
 alfa = 0.35
 epsilon = 0.05
-miu = 0.2
-beta = 0.7
-nu = 0.2
 omega_0 = 0.4
 omega_1 = 0.1
+#Parameters of ODE system
+miu = 0.2
+beta = 0.7
+nu = 0.1
 
 def plot_graphics(t_vector, G, S, T, name):
     plt.clf()
     plt.plot(t_vector, G, 'g', label='G(t)')
     plt.plot(t_vector, S, 'r', label='S(t)')
     plt.plot(t_vector, T, 'b', label='T(t)')
+    plt.ylim(0, 1)
     plt.legend()
     plt.grid()
     plt.xlabel('Time range')
@@ -32,9 +35,10 @@ def omega_function(G):
 
 def ode_system(u, t):
     G, S, T = u
+    omega = omega_function(G)
     dGdt = miu*S + nu*T - beta*G*T
-    dSdt = beta*G*T - omega_function(G)*S - miu*S
-    dTdt = omega_function(G)*S - nu*T
+    dSdt = beta*G*T - omega*S - miu*S
+    dTdt = omega*S - nu*T
     ans = [dGdt, dSdt, dTdt]
     return ans
 
@@ -64,8 +68,3 @@ plot_graphics(t_vector, G, S, T, "euler_implicit_solution")
 #trapezoid method
 G, S, T = trapezoid_method(ode_system, t_vector, u0, h)
 plot_graphics(t_vector, G, S, T, "trapezoid_solution")
-
-#Second Simulation
-#G0 = 0.8
-#S0 = 0.1
-#T0 = 0.1
