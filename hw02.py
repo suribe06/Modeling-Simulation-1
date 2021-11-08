@@ -5,13 +5,15 @@ from scipy import optimize
 import numpy as np
 import math
 
+lam = -1000
+
 def f(t,u):
-    return -10*u
-    #return 10*(u-math.cos(t))-math.sin(t)
+    #return -10*u
+    return lam*(u-math.cos(t))-math.sin(t)
 
 def sol_analitica(t):
-    return math.exp(-10*t)
-    #return math.cos(t)
+    #return math.exp(-10*t)
+    return math.cos(t)
 
 def euler_explicit_method(t_vector, y0, h):
     n = len(t_vector)
@@ -49,13 +51,14 @@ def main():
     tf = 2*math.pi
     y0 = 1
     t_vector, h = np.linspace(t0, tf, num=N, retstep=True)
+    print("delta t = {0}".format(h))
     n = len(t_vector)
     sol_vector = np.zeros(n)
     for i in range(len(t_vector)):
         sol_vector[i] = sol_analitica(t_vector[i])
 
     #Methods
-    e_vector1 = euler_explicit_method(t_vector, f, y0, h)
+    e_vector1 = euler_explicit_method(t_vector, y0, h)
     e_vector2 = euler_implicit_method(t_vector, y0, h)
     trap_vector = trapezoid_method(t_vector, y0, h)
 
@@ -72,4 +75,4 @@ def main():
     plt.show()
     return
 
-#main()
+main()
