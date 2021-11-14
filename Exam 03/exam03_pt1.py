@@ -30,6 +30,7 @@ def runge_kutta_adaptative(A, B, C, f, u0, t0, tf, h0, e_min, e_max, h_min, h_ma
     u_vector = [u0] #numeric solution
     u_vector_RK4 = []
     u_vector_RK5 = []
+    #Initial Condition
     u_vector_RK5.append(u0)
     u_vector_RK4.append(u0)
     t = t0
@@ -72,15 +73,17 @@ def runge_kutta_adaptative(A, B, C, f, u0, t0, tf, h0, e_min, e_max, h_min, h_ma
             t = t + h
             k = k + 1
             if e < e_min: h = 2*h
-
+        #keep h in the step size range
+        if h < h_min: h = h_min
+        elif h > h_max: h = h_max
     return u_vector, t_vector
 
+#Butcher table for Runge–Kutta–Fehlberg method
 A = [np.array([1/5]),
     np.array([3/40, 9/40]),
     np.array([44/45, -56/15, 32/9]),
     np.array([19372/6561, -25360/2187, 64448/6561, -212/729]),
     np.array([9017/3168, -355/33, 46732/5247, 49/176, -5103/18656])]
-
 B = [25/216, 0, 1408/2565, 2197/4104, -1/5]
 C = [1/4, 3/8, 12/13, 1, 1/2]
 
