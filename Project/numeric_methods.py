@@ -65,9 +65,3 @@ def trapezoid_method(f, t_vector, u0, h):
         T[i + 1] = y3
     ans = [G, S, T]
     return ans
-
-def runge_kutta_implicit_2s():
-    return
-
-def runge_kutta_explicit_rs():
-    return

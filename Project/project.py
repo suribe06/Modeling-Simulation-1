@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from numeric_methods import euler_explicit_method, euler_implicit_method, trapezoid_method
-from numeric_methods import runge_kutta_implicit_2s, runge_kutta_explicit_rs
 
 #Parameters for omega function
 alfa = 0.35
@@ -55,7 +54,7 @@ t_vector, h = np.linspace(t0, tf, num=N, retstep=True)
 #odeint method
 u = odeint(ode_system, u0, t_vector)
 G, S, T = u.T
-plot_graphics(t_vector, G, S, T, "odeint()_solution")
+plot_graphics(t_vector, G, S, T, "odeint_solution")
 
 #euler explicit method
 G, S, T = euler_explicit_method(ode_system, t_vector, u0, h)
