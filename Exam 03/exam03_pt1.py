@@ -51,10 +51,6 @@ def adaptive_runge_kutta(A, C, B1, B2, f, u0, t0, tf, h0, e_min, e_max, h_min, h
         RK4 = u[-1] + B1[0] * k1 + B1[1] * k2 + B1[2] * k3 + B1[3] * k4 + B1[4] * k5
         RK5 = u[-1] + B2[0] * k1 + B2[1] * k2 + B2[2] * k3 + B2[3] * k4 + B2[4] * k5 + B2[5] * k6
         #Calculate local truncation error
-        """sum = 0
-        for i in range(6):
-            sum += (B2[i]-B1[i])*ks[i]
-        e = sum * h"""
         e = None
         if u0.size == 1: e = abs(RK4 - RK5)
         else: e = np.linalg.norm(np.subtract(RK4, RK5), 2)
